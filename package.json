@@ -1,10 +1,11 @@
 {
-  "name": "empty-panel",
+  "name": "echarts-panel-demo",
   "version": "1.0.0",
-  "description": "empty panel for grafana",
+  "description": "echarts panel demo for grafana",
   "main": "src/module.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "grunt"
   },
   "author": "Advantech",
   "license": "ISC",

@@ -5,8 +5,13 @@ import echarts from './libs/echarts.min';
 import './style.css!';
 
 export class Controller extends MetricsPanelCtrl {
-
+  // 构造方法，在对象被创建时或实例化时调用
   constructor($scope, $injector) {
+    // 继承父类对象：在class方法中，继承是用extends关键字来实现的。
+    // 字类必须在constructor方法中调用super方法，否则新建实例时会报错。
+    // 报错的原因时：子类是没有自己的this对象的，它只能继承父类的this对象，然后对其进行加工。
+    // 而super方法就是将父类的this对象继承给字类。
+    // 没有执行super方法，子类就得不到this对象。
     super($scope, $injector);
 
     var panelDefaults = {
@@ -15,21 +20,80 @@ export class Controller extends MetricsPanelCtrl {
       method: 'POST',
       upInterval: 60000,
       format: 'Year',
-      ChartOption: {}
+      columns: [],
+      chartsOption: {
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: [],
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [{
+          type: "line",
+          data: [],
+          smooth: false,
+        }],
+      },
+      _chartsOption: {
+        xAxis: {
+          columns: [],
+          dataColumn: "",
+        },
+        series: {
+          line: {
+            areaStyle: false,
+            columns: [],
+            dataColumn: "",
+          },
+        },
+      },
+      log: false,
     };
-    console.log(_);
+    // Lodash，分配来源对象的可枚举属性到目标对象所有解析为undefined的属性上
+    // 遍历panelDefaults给对象this.panel添加字段，并保持原来字段的值
     _.defaults(this.panel, panelDefaults);
+    if (this.panel.log) console.log(this);
+    if (this.panel.log) console.log(_);
+    // DataSource 查询成功后触发
     this.events.on('data-received', this.onDataReceived.bind(this));
+    // DataSource 查询失败后触发
     this.events.on('data-error', this.onDataError.bind(this));
+    // 数据快照加载，在Dashboard加载时触发
     this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
+    // 初始化Panel控制台布局
     this.events.on('panel-initialized', this.render.bind(this));
-
+    // 请求数据
     this.refreshData();
   }
 
-
   onDataReceived(dataList) {
+    if (this.panel.log) console.log(dataList);
+    const _data = dataList[0];
+    this.panel.columns = [..._data.columns.map(v => v.text), ""]; // [ "name","value" ]
+    if (this.panel.log) console.log(this.panel.columns);
+    // 过滤备选列
+    this.panel._chartsOption.xAxis.columns = this.panel.columns.filter(v => v != this.panel._chartsOption.series.line.dataColumn);
+    if (this.panel.log) console.log(this.panel._chartsOption.xAxis.columns);
+    this.panel._chartsOption.series.line.columns = this.panel.columns.filter(v => v != this.panel._chartsOption.xAxis.dataColumn);
+    if (this.panel.log) console.log(this.panel._chartsOption.series.line.columns);
+
+    // 取值
+    this.panel.chartsOption.xAxis.data = _data.rows.map(v => this.panel.columns.indexOf(this.panel._chartsOption.xAxis.dataColumn) == this.panel.columns.length - 1 ? null : v[this.panel.columns.indexOf(this.panel._chartsOption.xAxis.dataColumn)]);
+    if (this.panel.log) console.log(this.panel.chartsOption.xAxis.data);
+    this.panel.chartsOption.series[0].data = _data.rows.map(v => this.panel.columns.indexOf(this.panel._chartsOption.series.line.dataColumn) == this.panel.columns.length - 1 ? null : v[this.panel.columns.indexOf(this.panel._chartsOption.series.line.dataColumn)]);
+    if (this.panel.log) console.log(this.panel.chartsOption.series[0].data);
+
+    if (this.panel._chartsOption.series.line.areaStyle) {
+      this.panel.chartsOption.series[0].areaStyle = {};
+    } else {
+      delete this.panel.chartsOption.series[0].areaStyle;
+    }
+
+    if (this.panel.log) console.log(this.panel.chartsOption);
+    if (this.panel.log) console.log(this.panel._chartsOption);
     this.refreshed = true;
     this.render();
     this.refreshed = false;
@@ -40,11 +104,12 @@ export class Controller extends MetricsPanelCtrl {
   }
 
   onInitEditMode() {
-    this.addEditorTab('Option', 'public/plugins/empty-panel/partials/options.html', 2);
-    this.addEditorTab('Docs', 'public/plugins/empty-panel/partials/docs.html', 3);
+    this.addEditorTab('Options', 'public/plugins/echarts-panel-demo/partials/options.html', 2);
+    this.addEditorTab('Dev', 'public/plugins/echarts-panel-demo/partials/dev.html', 3);
   }
 
-
+  // 使用AJAX异步请求数据，当成功后调用this.onDataReceived()。
+  // 自执行设置
   refreshData() {
     let _this = this,
       xmlhttp;
@@ -75,9 +140,13 @@ export class Controller extends MetricsPanelCtrl {
     }, _this.panel.upInterval);
   }
 
+  // 当Controller被Angular编译后执行
   link(scope, elem, attrs, ctrl) {
+    if (ctrl.panel.log) console.log(scope);
+    if (ctrl.panel.log) console.log(elem);
+    if (ctrl.panel.log) console.log(attrs);
+    if (ctrl.panel.log) console.log(ctrl);
     const $panelContainer = elem.find('.echarts_container')[0];
-
 
     ctrl.refreshed = true;
 
@@ -94,16 +163,12 @@ export class Controller extends MetricsPanelCtrl {
 
     setHeight();
 
+    // 创建Echarts实例
     let myChart = echarts.init($panelContainer, 'dark');
 
     setTimeout(function () {
       myChart.resize();
     }, 1000);
-
-
-
-
-
 
     function render() {
       if (!myChart) {
@@ -112,24 +177,14 @@ export class Controller extends MetricsPanelCtrl {
       setHeight();
       myChart.resize();
 
+      // 避免因移动、缩放等操作而重复请求数据
       if (ctrl.refreshed) {
         myChart.clear();
-
-        let option = ctrl.panel.ChartOption;
-
-        myChart.setOption({
-          xAxis: {
-            type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-          },
-          yAxis: {
-            type: 'value'
-          },
-          series: [{
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: 'line'
-          }]
-        });
+        if (ctrl.panel.log) console.log(ctrl.panel.chartsOption);
+        let option = ctrl.panel.chartsOption;
+        if (ctrl.panel.log) console.log(option);
+        // 配置Echarts实例
+        myChart.setOption(option);
       }
     }
 

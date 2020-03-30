@@ -1,25 +1,25 @@
 {
   "type": "panel",
-  "name": "Empty Panel",
-  "id": "empty-panel",
-
+  "name": "Echarts Panel Demo",
+  "id": "echarts-panel-demo",
   "info": {
-    "description": "empty panel for grafana",
+    "description": "echart panel demo for grafana",
     "author": {
-      "name": "LangNang",
+      "name": "Advantech",
       "url": "http://grafana.com"
     },
-    "keywords": ["panel"],
+    "keywords": [
+      "panel"
+    ],
     "logos": {
-      "small": "src/img/logo.svg",
-      "large": "src/img/logo.svg"
+      "small": "src/img/logo.png",
+      "large": "src/img/logo.png"
     },
     "links": [],
     "screenshots": [],
     "version": "1.0.0",
-    "updated": "2018-09-03"
+    "updated": "2020-03-30"
   },
-
   "dependencies": {
     "grafanaVersion": "5.0",
     "plugins": []
