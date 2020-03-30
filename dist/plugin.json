@@ -1,0 +1,27 @@
+{
+  "type": "panel",
+  "name": "Empty Panel",
+  "id": "empty-panel",
+
+  "info": {
+    "description": "empty panel for grafana",
+    "author": {
+      "name": "LangNang",
+      "url": "http://grafana.com"
+    },
+    "keywords": ["panel"],
+    "logos": {
+      "small": "src/img/logo.svg",
+      "large": "src/img/logo.svg"
+    },
+    "links": [],
+    "screenshots": [],
+    "version": "1.0.0",
+    "updated": "2018-09-03"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "5.0",
+    "plugins": []
+  }
+}
