@@ -120,8 +120,9 @@ constructor($scope, $injector) {
     this.events.on("data-error", this.onDataError.bind(this));
     // 数据快照加载，在Dashboard加载时触发
     this.events.on("data-snapshot-load", this.onDataReceived.bind(this));
+    // 初始化编辑模式，控制台布局
     this.events.on("init-edit-mode", this.onInitEditMode.bind(this));
-    // 初始化Panel控制台布局
+    // Panel布局改变时触发，如移动、缩放
     this.events.on("panel-initialized", this.render.bind(this));
     // 请求数据
     this.refreshData();
