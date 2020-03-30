@@ -160,6 +160,99 @@ INSERT INTO `grafana-echarts-panel`.`demo`(`name`, `value`, `datetime`) VALUES (
 INSERT INTO `grafana-echarts-panel`.`demo`(`name`, `value`, `datetime`) VALUES ('测试010', 400, NOW());
 ```
 
+```sql
+SELECT `name`,`value` FROM demo ORDER BY `id`;
+```
+
+### Console
+
+```js
+var panelDefaults = {
+  columns: [], // 查询结果所有列名
+  chartsOption: {
+    xAxis: {
+      type: "category",
+      boundaryGap: false, // 坐标轴两边是否留白
+      data: []
+    },
+    yAxis: {
+      type: "value"
+    },
+    series: [
+      {
+        type: "line",
+        data: [],
+        smooth: false // 是否平滑曲线显示
+      }
+    ]
+  },
+  _chartsOption: {
+    xAxis: {
+      columns: [], // 过滤折现后的列名数组
+      dataColumn: "" // X轴对应查询结果列名
+    },
+    series: {
+      line: {
+        areaStyle: false, // 是否显示区域填充
+        columns: [], // 过滤x轴后的列名数组
+        dataColumn: "" // 折线对应查询结果列名
+      }
+    }
+  }
+};
+```
+
+```html
+<!-- ng-model 指令用于绑定应用程序数据到 HTML 控制器(input, select, textarea)的值。 -->
+<!-- ng-options 指令使用数组来填充下拉列表 -->
+<!-- ng-change 事件在值的每次改变时触发，它不需要等待一个完成的修改过程，或等待失去焦点的动作。 -->
+<div class="gf-form">
+  <label class="gf-form-label width-7">dataColumn</label>
+  <div class="gf-form-select-wrapper">
+    <select
+      class="gf-form-input"
+      ng-model="ctrl.panel._chartsOption.xAxis.dataColumn"
+      ng-options="i for i in ctrl.panel._chartsOption.xAxis.columns"
+      ng-change="ctrl.refresh()"
+    ></select>
+  </div>
+</div>
+```
+
+### onDataReceived&&render
+
+```js
+// onDataReceived
+onDataReceived(dataList) {
+    const _data = dataList[0];
+    this.panel.columns = [..._data.columns.map(v => v.text), ""]; // [ "name","value" ]
+    // 过滤备选列
+    this.panel._chartsOption.xAxis.columns = this.panel.columns.filter(v => v != this.panel._chartsOption.series.line.dataColumn);
+    this.panel._chartsOption.series.line.columns = this.panel.columns.filter(v => v != this.panel._chartsOption.xAxis.dataColumn);
+    // 取值
+    this.panel.chartsOption.xAxis.data = _data.rows.map(v => v[this.panel.columns.indexOf(this.panel._chartsOption.xAxis.dataColumn)]);
+    this.panel.chartsOption.series[0].data = _data.rows.map(v => v[this.panel.columns.indexOf(this.panel._chartsOption.series.line.dataColumn)]);
+    // 是否留白
+    if (this.panel._chartsOption.series.line.areaStyle) {
+      this.panel.chartsOption.series[0].areaStyle = {};
+    } else {
+      delete this.panel.chartsOption.series[0].areaStyle;
+    }
+    this.refreshed = true;
+    this.render();
+    this.refreshed = false;
+  }
+```
+
+```js
+// render
+function render() {
+  let option = ctrl.panel.chartsOption;
+  // 配置Echarts实例
+  myChart.setOption(option);
+}
+```
+
 ## Build
 
 ```bat
