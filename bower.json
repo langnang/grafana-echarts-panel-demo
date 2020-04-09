@@ -1,0 +1,12 @@
+{
+  "name": "empty-panel",
+  "description": "Empty Panel for Grafana",
+  "main": "src/main.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+  }
+}

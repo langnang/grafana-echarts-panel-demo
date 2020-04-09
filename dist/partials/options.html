@@ -1,0 +1,50 @@
+<div class="editor-row">
+
+    <div class="section gf-form-group">
+        <h5 class="section-heading">xAis</h5>
+        <div class="gf-form" checked="ctrl.panel.chartsOption.xAxis.boundaryGap" on-change="ctrl.refresh()">
+            <label for="check-xAxis-boundaryGap-show" class="gf-form-label width-7">boundaryGap</label>
+            <div class="gf-form-switch ">
+                <input id="check-xAxis-boundaryGap-show" type="checkbox"
+                    ng-model="ctrl.panel.chartsOption.xAxis.boundaryGap" ng-change="ctrl.refresh()"
+                    class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <label for="check-xAxis-boundaryGap-show" data-on="Yes" data-off="No"></label>
+            </div>
+        </div>
+        <div class="gf-form">
+            <label class="gf-form-label width-7">dataColumn</label>
+            <div class="gf-form-select-wrapper">
+                <select class="gf-form-input" ng-model="ctrl.panel._chartsOption.xAxis.dataColumn"
+                    ng-options="i for i in ctrl.panel._chartsOption.xAxis.columns" ng-change="ctrl.refresh()"></select>
+            </div>
+        </div>
+    </div>
+    <div class="section gf-form-group">
+        <h5 class="section-heading">Line</h5>
+        <div class="gf-form">
+            <label class="gf-form-label width-7">dataColumn</label>
+            <div class="gf-form-select-wrapper">
+                <select class="gf-form-input" ng-model="ctrl.panel._chartsOption.series.line.dataColumn"
+                    ng-options="i for i in ctrl.panel._chartsOption.series.line.columns"
+                    ng-change="ctrl.refresh()"></select>
+            </div>
+        </div>
+        <div class="gf-form" checked="ctrl.panel.chartsOption.series[0].smooth" on-change="ctrl.refresh()">
+            <label for="check-line-smooth-show" class="gf-form-label width-7">smooth</label>
+            <div class="gf-form-switch ">
+                <input id="check-line-smooth-show" type="checkbox" ng-model="ctrl.panel.chartsOption.series[0].smooth"
+                    ng-change="ctrl.refresh()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <label for="check-line-smooth-show" data-on="Yes" data-off="No"></label>
+            </div>
+        </div>
+        <div class="gf-form" checked="ctrl.panel._chartsOption.series.line.areaStyle" on-change="ctrl.refresh()">
+            <label for="check-line-areaStyle-show" class="gf-form-label width-7">areaStyle</label>
+            <div class="gf-form-switch ">
+                <input id="check-line-areaStyle-show" type="checkbox"
+                    ng-model="ctrl.panel._chartsOption.series.line.areaStyle" ng-change="ctrl.refresh()"
+                    class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <label for="check-line-areaStyle-show" data-on="Yes" data-off="No"></label>
+            </div>
+        </div>
+    </div>
+</div>

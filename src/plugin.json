@@ -1,0 +1,27 @@
+{
+  "type": "panel",
+  "name": "Echarts Panel Demo",
+  "id": "echarts-panel-demo",
+  "info": {
+    "description": "echart panel demo for grafana",
+    "author": {
+      "name": "Advantech",
+      "url": "http://grafana.com"
+    },
+    "keywords": [
+      "panel"
+    ],
+    "logos": {
+      "small": "src/img/logo.png",
+      "large": "src/img/logo.png"
+    },
+    "links": [],
+    "screenshots": [],
+    "version": "1.0.0",
+    "updated": "2020-03-30"
+  },
+  "dependencies": {
+    "grafanaVersion": "5.0",
+    "plugins": []
+  }
+}
